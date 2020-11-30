@@ -1,8 +1,15 @@
 #pragma once
+//handle http protocols
 
 #include<sstream>
 #include<functional>
 #include"curl/curl.h"
+
+#ifdef _DEBUG
+#pragma comment(lib,"Debug/libcurl.lib")
+#else
+#pragma comment(lib,"Release/libcurl.lib")
+#endif // _DEBUG
 
 
 #define	 USER_AGENT "Mozilla/5.0"
@@ -35,6 +42,6 @@ public:
 	ZPostMan& operator >>(const std::string& head);
 
 	bool POST(const std::string& url, const std::string& args, on_response cb, void* userdata);
-	bool GET(const std::string& urlandargs, on_response cb, void* userdata);
+	bool GET(const std::string& url_and_args, on_response cb, void* userdata);
 };
 

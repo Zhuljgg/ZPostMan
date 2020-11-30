@@ -89,8 +89,38 @@ bool ZPostMan::POST(const std::string& url, const std::string& args, on_response
 {
 	CURLcode code;
 	if (!_handle) throw std::runtime_error("bad handle");
-	_resp_header.str("");//donot use .clear, it would not really free the buffer.
-	
+	_resp_header.str("");//donot use .clear, it would not really free the buffer
+	_resp_data.str("");
+	__set_opts(url);
+	curl_easy_setopt(_handle, CURLOPT_POSTFIELDSIZE, args.length());//long or size_t
+	curl_easy_setopt(_handle, CURLOPT_POSTFIELDS, args.c_str());
+	code = curl_easy_perform(_handle);
+	if (CURLE_OK == code)
+	{
+		if (cb)
+			cb(_resp_header.str(), _resp_data.str(), userdata);
+		return true;
+	}
+	std::cout << "..." << code;
+	return false;
+}
+
+bool ZPostMan::GET(const std::string& url_and_args, on_response cb, void* userdata)
+{
+	CURLcode code;
+	if (!_handle) throw std::runtime_error("bad handle");
+	_resp_header.str("");//donot use .clear, it would not really free the buffer
+	_resp_data.str("");
+	__set_opts(url_and_args);
+	curl_easy_setopt(_handle, CURLOPT_TIMEOUT, 300);
+	curl_easy_setopt(_handle, CURLOPT_CONNECTTIMEOUT, 120);
+	code = curl_easy_perform(_handle);
+	if (CURLE_OK == code)
+	{
+		if (cb)
+			cb(_resp_header.str(), _resp_data.str(), userdata);
+		return true;
+	}
 	return false;
 }
 
