@@ -5,10 +5,17 @@
 #include<functional>
 #include"curl/curl.h"
 
+#ifndef CURL_STATICLIB
+#define CURL_STATICLIB
+#endif // !CURL_STATICLIB
+
+#pragma comment(lib,"ws2_32.lib")
+#pragma comment(lib,"wldap32.lib")
+
 #ifdef _DEBUG
-#pragma comment(lib,"Debug/libcurl.lib")
+#pragma comment(lib,"DLL Debug/libcurl.lib")
 #else
-#pragma comment(lib,"Release/libcurl.lib")
+#pragma comment(lib,"DLL Release/libcurl.lib")
 #endif // _DEBUG
 
 
